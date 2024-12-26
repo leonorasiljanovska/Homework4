@@ -10,6 +10,9 @@ class Company(db.Model):
     company_code = db.Column(db.String(100), unique=True, nullable=False)
     last_transaction_price = db.Column(db.Float, nullable=False)
     last_info_date = db.Column(db.Date, nullable=False, default=date.today)
+    forecast_day = db.Column(db.String(10), nullable=True)
+    forecast_week = db.Column(db.String(10), nullable=True)
+    forecast_month = db.Column(db.String(10), nullable=True)
 
     # Relationship with CompanyData
     company_data = db.relationship('CompanyData', backref='company', lazy=True)

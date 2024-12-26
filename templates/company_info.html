@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Info - {{ company_code }}</title>
+    <link rel="stylesheet" href="/static/styles.css"> <!-- Optional for styling -->
+</head>
+<body>
+    <h1>Company Information: {{ company_code }}</h1>
+
+    <p>Last Information Date: {{ last_info_date }}</p>
+
+    <form method="POST">
+        <label for="period">Select Period:</label>
+        <select name="period" id="period" required>
+            <option value="day">Day</option>
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+        </select>
+
+        <button type="submit">Calculate Indicators</button>
+    </form>
+
+    {% if indicators and oscillators %}
+    <h2>Calculated Results</h2>
+    <h3>Indicators:</h3>
+    <ul>
+        {% for indicator, value in indicators.items() %}
+        <li>{{ indicator }}: {{ value }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Oscillators:</h3>
+    <ul>
+        {% for oscillator, value in oscillators.items() %}
+        <li>{{ oscillator }}: {{ value }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</body>
+</html>

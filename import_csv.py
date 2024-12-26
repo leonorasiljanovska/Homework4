@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-
+import talib
 from models import Company, db, CompanyData
 
 

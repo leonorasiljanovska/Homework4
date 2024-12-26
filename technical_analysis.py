@@ -4,6 +4,7 @@ from ta.trend import MACD, SMAIndicator, EMAIndicator, CCIIndicator
 from ta.volatility import BollingerBands
 from ta.volume import VolumeWeightedAveragePrice
 
+
 def calculate_indicators(df):
     # RSI (Индекс на релативна сила)
     df['RSI'] = RSIIndicator(close=df['Цена на последна трансакција'], window=14).rsi()
