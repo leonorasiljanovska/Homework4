@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Data Update</title>
+</head>
+<body>
+    <h1>Update Company Data</h1>
+
+    <form method="POST">
+        <label for="company_code">Select Company:</label>
+        <select name="company_code" id="company_code">
+            <option value="" disabled selected>Select a company</option>
+            {% for code in company_codes %}
+                <option value="{{ code }}">{{ code }}</option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <button type="submit">Update</button>
+    </form>
+
+</body>
+</html>
