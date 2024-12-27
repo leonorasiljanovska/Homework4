@@ -73,7 +73,27 @@ def company_info(company_code):
         date_range = (start_date, last_info_date)
 
         # Simulate fetching data for the date range and calculating indicators/oscillators
-        indicators, oscillators = calculate_for_date_range(date_range)
+        signal = calculate_for_date_range(date_range)
+
+        column_name = ""
+        if selected_period == 'day':
+            column_name = 'forecast_day'
+        elif selected_period == 'week':
+            column_name = 'forecast_week'
+        elif selected_period == 'month':
+            column_name = 'forecast_month'
+
+        # Save the signal in the corresponding column of the Companies table
+        db.session.execute(
+            text(f"""
+                    UPDATE public."Companies"
+                    SET {column_name} = :signal
+                    WHERE company_code = :company_code
+                """),
+            {'company_code': company_code, 'signal': signal}
+        )
+
+        db.session.commit()
 
         # Render the results or return as a string
         return f"Calculated for {company_code}: period {selected_period} from {start_date} to {last_info_date}"
@@ -85,15 +105,15 @@ def company_info(company_code):
 # def initialize_app():
 #     return 'App initialized! Visit /import-csv to import data.'
 
-
-@app.route('/import-csv')
-def import_csv():
-    try:
-        csv_folder = os.path.join(os.path.dirname(__file__), 'csv last')
-        import_csv_to_db(csv_folder)
-        return 'CSV import completed successfully!'
-    except Exception as e:
-        return f'Error during import: {str(e)}', 500
+#
+# @app.route('/import-csv')
+# def import_csv():
+#     try:
+#         csv_folder = os.path.join(os.path.dirname(__file__), 'csv last')
+#         import_csv_to_db(csv_folder)
+#         return 'CSV import completed successfully!'
+#     except Exception as e:
+#         return f'Error during import: {str(e)}', 500
 
 
 # Route to display the company dropdown and update data for selected company
