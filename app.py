@@ -97,8 +97,14 @@ def company_info(company_code):
 
         db.session.commit()
 
-        # Render the results or return as a string
-        return f"Calculated for {company_code}: period {selected_period} from {start_date} to {last_info_date}"
+        return render_template(
+            "company_info.html",
+            company_code=company_code,
+            selected_period=selected_period,
+            start_date=start_date,
+            last_info_date=last_info_date,
+            signal=signal
+        )
 
     return render_template("company_info.html", company_code=company_code)
 

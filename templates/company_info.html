@@ -22,21 +22,11 @@
         <button type="submit">Calculate Indicators</button>
     </form>
 
-    {% if indicators and oscillators %}
+    {% if selected_period %}
     <h2>Calculated Results</h2>
-    <h3>Indicators:</h3>
-    <ul>
-        {% for indicator, value in indicators.items() %}
-        <li>{{ indicator }}: {{ value }}</li>
-        {% endfor %}
-    </ul>
-
-    <h3>Oscillators:</h3>
-    <ul>
-        {% for oscillator, value in oscillators.items() %}
-        <li>{{ oscillator }}: {{ value }}</li>
-        {% endfor %}
-    </ul>
+    <p><strong>Selected Period:</strong> {{ selected_period }}</p>
+    <p><strong>Start Date:</strong> {{ start_date }}</p>
+    <p><strong>Signal:</strong> {{ signal }}</p>
     {% endif %}
 </body>
 </html>
