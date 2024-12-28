@@ -98,7 +98,60 @@ def calculate_moving_average(prices, window=5):
     return prices.rolling(window=window).mean()
 
 
+# Exponential Moving Average (EMA)
+def calculate_ema(prices, window=14):
+    return prices.ewm(span=window, adjust=False).mean()
 
 
+# Bollinger Bands (BB)
+def calculate_bollinger_bands(prices, window=14):
+    sma = prices.rolling(window=window).mean()
+    rolling_std = prices.rolling(window=window).std()
+    upper_band = sma + (rolling_std * 2)
+    lower_band = sma - (rolling_std * 2)
+    return upper_band, lower_band
 
 
+# Average True Range (ATR)
+def calculate_atr(df, window=14):
+    df['H-L'] = df['max_price'] - df['min_price']
+    df['H-PC'] = abs(df['max_price'] - df['last_transaction_price'].shift(1))
+    df['L-PC'] = abs(df['min_price'] - df['last_transaction_price'].shift(1))
+    df['TR'] = df[['H-L', 'H-PC', 'L-PC']].max(axis=1)
+    atr = df['TR'].rolling(window=window).mean()
+    return atr
+
+
+# MACD (Moving Average Convergence Divergence)
+def calculate_macd(prices, short_window=12, long_window=26, signal_window=9):
+    short_ema = calculate_ema(prices, short_window)
+    long_ema = calculate_ema(prices, long_window)
+    macd = short_ema - long_ema
+    signal = calculate_ema(macd, signal_window)
+    histogram = macd - signal
+    return macd, signal, histogram
+
+
+# Stochastic Oscillator
+def calculate_stochastic(df, window=14):
+    low_min = df['min_price'].rolling(window=window).min()
+    high_max = df['max_price'].rolling(window=window).max()
+    stochastic = 100 * (df['last_transaction_price'] - low_min) / (high_max - low_min)
+    return stochastic
+
+
+# Commodity Channel Index (CCI)
+def calculate_cci(df, window=20):
+    tp = (df['max_price'] + df['min_price'] + df['last_transaction_price']) / 3
+    sma = tp.rolling(window=window).mean()
+    mad = tp.rolling(window=window).apply(lambda x: np.fabs(x - x.mean()).mean())  # Mean Absolute Deviation
+    cci = (tp - sma) / (0.015 * mad)
+    return cci
+
+
+# Williams %R
+def calculate_williams_r(df, window=14):
+    highest_high = df['max_price'].rolling(window=window).max()
+    lowest_low = df['min_price'].rolling(window=window).min()
+    williams_r = (highest_high - df['last_transaction_price']) / (highest_high - lowest_low) * -100
+    return williams_r
