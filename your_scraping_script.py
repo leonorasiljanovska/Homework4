@@ -48,18 +48,20 @@ def update_single_company_data(code, driver, db_session):
 
     if not company:
         print(f"Company with code {code} does not exist in the database. Adding it.")
-        # Default start date if the company doesn't exist: 10 years ago
-        start_date = datetime.today() - timedelta(days=365 * 10)
-        company = Company(company_code=code, last_info_date=start_date.date())
+        # Default start date if the company is new, no need from going 10 years back
+        start_date = datetime.today() - timedelta(days=365)
+        company = Company(company_code=code, last_transaction_price=0, last_info_date=start_date.date())
         db_session.add(company)
         db_session.commit()
     else:
         # Fetch the company's last info date from the database
-        start_date = company.last_info_date   # Start from the next day after last_info_date
+        start_date = company.last_info_date  # Start from the next day after last_info_date
 
     # + timedelta(days=1)
     # Get today's date as the end date
     end_date = datetime.today().date()
+    if isinstance(start_date, datetime):
+        start_date = start_date.date()
 
     if start_date > end_date:
         print(f"No new data to fetch for {code}. Start date ({start_date}) is after today's date ({end_date}).")
@@ -128,12 +130,21 @@ def update_single_company_data(code, driver, db_session):
             # Insert new data into the database
             last_transaction_price = None  # Track the last transaction price
 
+            valid_rows = []
+
             for _, row in df.iterrows():
+                # Check for required fields
+                if not row["Датум"] or not row["Цена на последна трансакција"]:
+                    continue  # Skip rows with missing essential data
+
                 data_date = datetime.strptime(row["Датум"], '%d.%m.%Y').date()
-
-
                 # Handle price fields with the handle_price function
                 last_transaction_price = handle_price(row['Цена на последна трансакција'])
+
+                # Skip rows where transaction price is invalid after processing
+                if last_transaction_price is None:
+                    continue
+
                 max_price = handle_price(row['Мак.'])
                 min_price = handle_price(row['Мин.'])
                 average_price = handle_price(row['Просечна цена'])
@@ -142,21 +153,26 @@ def update_single_company_data(code, driver, db_session):
                 total_turnover = handle_price(row['Вкупен промет во денари'])
 
                 # Create a CompanyData instance
-                company_data = CompanyData(
-                    company_id=company.id,
-                    date=pd.to_datetime(row['Датум']),
-                    last_transaction_price=last_transaction_price,  # Store as string
-                    max_price=max_price,
-                    min_price=min_price,
-                    average_price=average_price,
-                    price_change_percentage=price_change_percentage,
-                    quantity=row['Количина'],
-                    turnover_best_bests=turnover_best_bests,
-                    total_turnover=total_turnover
+                valid_rows.append(
+                    CompanyData(
+                        company_id=company.id,
+                        date=pd.to_datetime(row['Датум']),
+                        last_transaction_price=last_transaction_price,  # Store as string
+                        max_price=max_price,
+                        min_price=min_price,
+                        average_price=average_price,
+                        price_change_percentage=price_change_percentage,
+                        quantity=row['Количина'],
+                        turnover_best_bests=turnover_best_bests,
+                        total_turnover=total_turnover
+                    )
                 )
-                db.session.add(company_data)
-
-            db_session.commit()
+            if valid_rows:
+                db_session.bulk_save_objects(valid_rows)
+                db_session.commit()
+                print(f"Inserted {len(valid_rows)} valid rows for company {code}.")
+            else:
+                print(f"No valid rows to insert for company {code}.")
 
             latest_company_data = db_session.query(CompanyData).filter(
                 CompanyData.company_id == company.id,

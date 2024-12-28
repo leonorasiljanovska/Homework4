@@ -10,6 +10,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
+from models.company_data import CompanyData
+from models.company import Company
 
 from technical_analysis.calculations import calculate_for_date_range
 from your_scraping_script import update_single_company_data, get_company_codes  # Import scraping functions
