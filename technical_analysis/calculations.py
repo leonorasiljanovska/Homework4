@@ -3,6 +3,7 @@ import numpy as np
 from models import db
 from sqlalchemy import text
 
+
 def generate_signal(
         rsi, macd_histogram, last_price, upper_band, lower_band,
         moving_average, ema, atr, stochastic, cci, williams_r
@@ -155,3 +156,51 @@ def calculate_williams_r(df, window=14):
     lowest_low = df['min_price'].rolling(window=window).min()
     williams_r = (highest_high - df['last_transaction_price']) / (highest_high - lowest_low) * -100
     return williams_r
+
+
+# Calculate all indicators and oscillators for the date range
+def calculate_for_date_range(date_range):
+    start_date, end_date = date_range
+
+    # Query the database for the date range (example using SQLAlchemy)
+    data = db.session.execute(
+        text("""
+            SELECT date, last_transaction_price, max_price, min_price
+            FROM public."CompaniesData"
+            WHERE date BETWEEN :start_date AND :end_date
+        """),
+        {'start_date': start_date, 'end_date': end_date}
+    ).fetchall()
+
+    # Convert to a DataFrame for easier processing
+    df = pd.DataFrame(data, columns=['date', 'last_transaction_price', 'max_price', 'min_price'])
+
+    # Calculate indicators
+    moving_average = calculate_moving_average(df['last_transaction_price'])
+    ema = calculate_ema(df['last_transaction_price'])
+    upper_band, lower_band = calculate_bollinger_bands(df['last_transaction_price'])
+    atr = calculate_atr(df)
+    macd, macd_signal, macd_histogram = calculate_macd(df['last_transaction_price'])
+
+    # Calculate oscillators
+    rsi = calculate_rsi(df['last_transaction_price'])
+    stochastic = calculate_stochastic(df)
+    cci = calculate_cci(df)
+    williams_r = calculate_williams_r(df)
+
+    # Call the signal generation function
+    signal = generate_signal(
+        rsi=rsi.iloc[-1],  # Use the latest value
+        macd_histogram=macd_histogram.iloc[-1],  # Use the latest value
+        last_price=df['last_transaction_price'].iloc[-1],  # Latest closing price
+        upper_band=upper_band.iloc[-1],  # Latest upper band value
+        lower_band=lower_band.iloc[-1],  # Latest lower band value
+        moving_average=moving_average.iloc[-1],  # Latest moving average value
+        ema=ema.iloc[-1],  # Latest EMA value
+        atr=atr.iloc[-1],  # Latest ATR value
+        stochastic=stochastic.iloc[-1],  # Latest stochastic value
+        cci=cci.iloc[-1],  # Latest CCI value
+        williams_r=williams_r.iloc[-1]  # Latest Williams %R value
+    )
+
+    return signal
