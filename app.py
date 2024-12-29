@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for
 from flask_migrate import Migrate
 from sqlalchemy import text
+
+from LSTM.LSTM_prediction import perform_lstm_prediction
 from fundamental_analysis.NLP_prediction import perform_nlp_recommendation
 from fundamental_analysis.scraping_pdfs_for_company import get_company_name, select_date_and_download
 from models.db import db
@@ -65,6 +67,27 @@ def download_pdfs(company_code):
 
 
 # The rest of the code remains the same
+
+@app.route('/lstm_prediction', methods=['POST'])
+def lstm_prediction():
+    try:
+        company_code = request.form['company_code']
+
+        # Perform LSTM prediction and get result
+        recommendation, predictions, rmse = perform_lstm_prediction(company_code)
+
+        # Update the company's LSTM prediction in the database
+        company = Company.query.filter_by(company_code=company_code).first()
+        if company:
+            company.LSTM_prediction = recommendation  # Update the LSTM_prediction column
+            db.session.commit()
+
+        # Return the result to the page
+        return render_template('index.html', prediction=recommendation, company_codes=Company.query.all())
+
+    except Exception as e:
+        print(f"Error during LSTM prediction: {e}")
+        return render_template('index.html', prediction=None, company_codes=Company.query.all())
 
 @app.route('/nlp_recommendation', methods=['POST'])
 def nlp_recommendation():

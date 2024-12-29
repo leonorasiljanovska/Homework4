@@ -51,6 +51,19 @@
         <button type="submit">Update</button>
     </form>
 
+    <!-- LSTM Prediction Button -->
+    <br><br>
+    <form id="lstm_form" action="{{ url_for('lstm_prediction') }}" method="POST">
+        <input type="hidden" name="company_code" id="lstm_company_code">
+        <button type="submit">Predict with LSTM</button>
+    </form>
+
+    <!-- Display prediction result -->
+    {% if prediction %}
+        <h3>LSTM Prediction: {{ prediction }}</h3>
+        <p>Prediction has been saved to the database.</p>
+    {% endif %}
+
     <!-- NLP Recommendation Button -->
     <br><br>
     <form id="nlp_form" action="{{ url_for('nlp_recommendation') }}" method="POST">
@@ -74,6 +87,9 @@
     // Dynamically update all forms when company selection changes
     document.getElementById("company_code").addEventListener("change", function () {
         var companyCode = this.value;
+
+        // Update the hidden input for LSTM form
+        document.getElementById("lstm_company_code").value = companyCode;
 
         // Update the hidden input for NLP form
         document.getElementById("nlp_company_code").value = companyCode;

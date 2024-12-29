@@ -14,6 +14,7 @@ class Company(db.Model):
     forecast_week = db.Column(db.String(10), nullable=True)
     forecast_month = db.Column(db.String(10), nullable=True)
     NLP_recommendation = db.Column(db.String(50), nullable=True)
+    LSTM_prediction = db.Column(db.String(50), nullable=True)
 
 
     # Relationship with CompanyData
