@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 from flask import Flask, render_template, request
 from flask_migrate import Migrate
 from sqlalchemy import text
+
+from fundamental_analysis.scraping_pdfs_for_company import get_company_name, select_date_and_download
 from models.db import db
 from import_csv import import_csv_to_db
 import os
@@ -43,6 +45,26 @@ def create_app():
 
 
 app = create_app()
+
+
+@app.route("/company/<company_code>/download-pdfs", methods=["GET"])
+def download_pdfs(company_code):
+    # Assuming you have a function `select_date_and_download` to handle the PDF downloading
+    company_name = get_company_name(company_code)  # Fetch the company name using the provided company code
+    if company_name:
+        # Call the function that selects date and downloads the PDFs for the given company
+        try:
+            num_pdfs = select_date_and_download("https://www.seinet.com.mk/search/10", company_name)
+            if num_pdfs is None:
+                return f"There were no news for the company {company_name} found."  # Update base_url accordingly
+            return f"{num_pdfs} PDFs were successfully downloaded for {company_name}!"
+        except Exception as e:
+            return f"Error while downloading PDFs: {str(e)}", 500
+    else:
+        return "Invalid company code", 400
+
+
+# The rest of the code remains the same
 
 
 @app.route("/company/<company_code>", methods=["GET", "POST"])
