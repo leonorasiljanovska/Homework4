@@ -1,3 +1,31 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#    <title>Company Data Update</title>#}
+{#    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">#}
+{##}
+{#</head>#}
+{#<body>#}
+{#    <h1>Update Company Data</h1>#}
+{##}
+{#    <form method="POST">#}
+{#        <label for="company_code">Select Company:</label>#}
+{#        <select name="company_code" id="company_code">#}
+{#            <option value="" disabled selected>Select a company</option>#}
+{#            {% for code in company_codes %}#}
+{#                <option value="{{ code }}">{{ code }}</option>#}
+{#            {% endfor %}#}
+{#        </select>#}
+{##}
+{#        <br><br>#}
+{##}
+{#        <button type="submit">Update</button>#}
+{#    </form>#}
+{##}
+{#</body>#}
+{#</html>#}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +33,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Company Data Update</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-
 </head>
 <body>
     <h1>Update Company Data</h1>
@@ -23,6 +50,21 @@
 
         <button type="submit">Update</button>
     </form>
+
+    <!-- Forecast Button Form -->
+    <br><br>
+    <form id="forecast_form" action="" method="get">
+        <button type="submit">Forecast with Indicators and Oscillators</button>
+    </form>
+
+    <script>
+        // Dynamically update the action of the forecast form based on the selected company
+        document.getElementById("company_code").addEventListener("change", function() {
+            var companyCode = this.value;
+            var formAction = "/company/" + companyCode;
+            document.getElementById("forecast_form").action = formAction;
+        });
+    </script>
 
 </body>
 </html>

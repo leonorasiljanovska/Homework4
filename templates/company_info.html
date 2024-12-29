@@ -26,7 +26,12 @@
     <h2>Calculated Results</h2>
     <p><strong>Selected Period:</strong> {{ selected_period }}</p>
     <p><strong>Start Date:</strong> {{ start_date }}</p>
-    <p><strong>Signal:</strong> {{ signal }}</p>
-    {% endif %}
+    <p><strong>Signal:</strong>
+        {% if signal %}
+            {{ signal }}
+        {% else %}
+            No data available for the selected period!
+        {% endif %}
+    </p>    {% endif %}
 </body>
 </html>

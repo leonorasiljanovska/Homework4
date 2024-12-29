@@ -182,25 +182,45 @@ def calculate_for_date_range(date_range):
     atr = calculate_atr(df)
     macd, macd_signal, macd_histogram = calculate_macd(df['last_transaction_price'])
 
+    if df.empty:
+        # Handle the case where no data is found for the selected range
+        return None  # or return a default value if you need to
+
     # Calculate oscillators
     rsi = calculate_rsi(df['last_transaction_price'])
     stochastic = calculate_stochastic(df)
     cci = calculate_cci(df)
     williams_r = calculate_williams_r(df)
 
+    #Handle case if any indicator is empty
+    if rsi.empty or macd_histogram.empty or upper_band.empty or lower_band.empty or moving_average.empty or ema.empty or atr.empty or stochastic.empty or cci.empty or williams_r.empty:
+        # Handle the case where one or more indicators have no results
+        return None
+
+    # Safely access the last element of each indicator
+    rsi_value = rsi.iloc[-1] if not rsi.empty else None
+    macd_histogram_value = macd_histogram.iloc[-1] if not macd_histogram.empty else None
+    upper_band_value = upper_band.iloc[-1] if not upper_band.empty else None
+    lower_band_value = lower_band.iloc[-1] if not lower_band.empty else None
+    moving_average_value = moving_average.iloc[-1] if not moving_average.empty else None
+    ema_value = ema.iloc[-1] if not ema.empty else None
+    atr_value = atr.iloc[-1] if not atr.empty else None
+    stochastic_value = stochastic.iloc[-1] if not stochastic.empty else None
+    cci_value = cci.iloc[-1] if not cci.empty else None
+    williams_r_value = williams_r.iloc[-1] if not williams_r.empty else None
+
     # Call the signal generation function
     signal = generate_signal(
-        rsi=rsi.iloc[-1],  # Use the latest value
-        macd_histogram=macd_histogram.iloc[-1],  # Use the latest value
+        rsi=rsi_value,  # Use the latest value, or None if empty
+        macd_histogram=macd_histogram_value,  # Use the latest value, or None if empty
         last_price=df['last_transaction_price'].iloc[-1],  # Latest closing price
-        upper_band=upper_band.iloc[-1],  # Latest upper band value
-        lower_band=lower_band.iloc[-1],  # Latest lower band value
-        moving_average=moving_average.iloc[-1],  # Latest moving average value
-        ema=ema.iloc[-1],  # Latest EMA value
-        atr=atr.iloc[-1],  # Latest ATR value
-        stochastic=stochastic.iloc[-1],  # Latest stochastic value
-        cci=cci.iloc[-1],  # Latest CCI value
-        williams_r=williams_r.iloc[-1]  # Latest Williams %R value
+        upper_band=upper_band_value,  # Latest upper band value
+        lower_band=lower_band_value,  # Latest lower band value
+        moving_average=moving_average_value,  # Latest moving average value
+        ema=ema_value,  # Latest EMA value
+        atr=atr_value,  # Latest ATR value
+        stochastic=stochastic_value,  # Latest stochastic value
+        cci=cci_value,  # Latest CCI value
+        williams_r=williams_r_value  # Latest Williams %R value
     )
-
     return signal

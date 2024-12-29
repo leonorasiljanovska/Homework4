@@ -27,6 +27,7 @@ def get_company_codes(driver):
     company_codes = [option['value'] for option in options if option['value'] and not re.search(r'\d', option['value'])]
 
     print(f"Retrieved {len(company_codes)} company codes.")
+    print(company_codes)
     return company_codes
 
 
