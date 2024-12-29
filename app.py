@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_migrate import Migrate
 from sqlalchemy import text
-
+from fundamental_analysis.NLP_prediction import perform_nlp_recommendation
 from fundamental_analysis.scraping_pdfs_for_company import get_company_name, select_date_and_download
 from models.db import db
 from import_csv import import_csv_to_db
@@ -66,6 +66,26 @@ def download_pdfs(company_code):
 
 # The rest of the code remains the same
 
+@app.route('/nlp_recommendation', methods=['POST'])
+def nlp_recommendation():
+    company_code = request.form.get('company_code')  # Get the selected company from the form
+
+    # Your NLP recommendation logic
+    nlp_recommendation = perform_nlp_recommendation(company_code)
+
+    # Update the NLP recommendation in the database
+    db.session.execute(
+        text("""
+            UPDATE public."Companies"
+            SET "NLP_recommendation" = :nlp_recommendation
+            WHERE company_code = :company_code
+        """),
+        {'company_code': company_code, 'nlp_recommendation': nlp_recommendation}
+    )
+    db.session.commit()
+
+    # Redirect to the company information page
+    return f"NLP prediction for {company_code} has been updated successfully! Recommendation: {nlp_recommendation}"
 
 @app.route("/company/<company_code>", methods=["GET", "POST"])
 def company_info(company_code):

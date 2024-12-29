@@ -1,3 +1,4 @@
+import os
 import time
 from datetime import datetime, timedelta
 from selenium import webdriver
@@ -99,10 +100,30 @@ def select_date_from_calendar(driver, date_str, date_picker_id):
     driver.implicitly_wait(1)
 
 
+def get_company_code(company_name):
+    # Reverse lookup in company_name_code dictionary
+    for code, name in company_name_code.items():
+        if name == company_name:
+            return code
+    return None
+
+
 def select_date_and_download(base_url, company_name):
     download_dir = r"C:\Leonora Siljanovska\FINKI\3 godina\DAS\Homework3\pdfs"
+    company_code = get_company_code(company_name)
+
+    if not company_code:
+        print(f"Error: Could not find company code for {company_name}")
+        return None
+
+    # Configure Chrome to wait for downloads
     chrome_options = webdriver.ChromeOptions()
-    prefs = {"download.default_directory": download_dir}
+    prefs = {
+        "download.default_directory": download_dir,
+        "download.prompt_for_download": False,
+        "download.directory_upgrade": True,
+        "safebrowsing.enabled": True
+    }
     chrome_options.add_experimental_option("prefs", prefs)
 
     print("Initializing WebDriver...")
@@ -110,6 +131,7 @@ def select_date_and_download(base_url, company_name):
     driver.get(base_url)
 
     downloaded_count = 0
+    file_number = 1
 
     try:
         # Select language
@@ -138,7 +160,6 @@ def select_date_and_download(base_url, company_name):
         WebDriverWait(driver, 20).until(
             EC.presence_of_all_elements_located((By.XPATH, "//table[@class='table table-hover']//tbody//tr"))
         )
-        print("Page loaded successfully.")
 
         # Set date range
         today = datetime.today()
@@ -146,15 +167,9 @@ def select_date_and_download(base_url, company_name):
         target_date_from = start_date.strftime('%d.%m.%Y')
         target_date_to = today.strftime('%d.%m.%Y')
 
-        print(f"Selecting 'From' date: {target_date_from} and 'To' date: {target_date_to}")
+        print(f"Selecting dates from {target_date_from} to {target_date_to}")
         select_date_from_calendar(driver, target_date_from, "formDateFrom")
         select_date_from_calendar(driver, target_date_to, "formDateTo")
-
-        # Process table rows
-        WebDriverWait(driver, 20).until(
-            EC.presence_of_all_elements_located((By.XPATH, "//table[@class='table table-hover']//tbody//tr"))
-        )
-        print("Waiting for table rows to load...")
 
         while True:
             rows = driver.find_elements(By.XPATH, "//table[@class='table table-hover']//tbody//tr")
@@ -165,7 +180,7 @@ def select_date_and_download(base_url, company_name):
 
             for row_index in range(len(rows)):
                 try:
-                    # Refresh rows reference after page reload
+                    # Refresh rows reference
                     rows = driver.find_elements(By.XPATH, "//table[@class='table table-hover']//tbody//tr")
                     tds = rows[row_index].find_elements(By.TAG_NAME, 'td')
 
@@ -179,20 +194,41 @@ def select_date_and_download(base_url, company_name):
                             )
 
                             if download_link.is_displayed() and download_link.is_enabled():
-                                print(f"Found download link on: {driver.current_url}")
+                                print(f"Downloading file for {company_code} (#{file_number})")
+
+                                # Click download and wait for file
                                 download_link.click()
                                 time.sleep(5)  # Wait for download to complete
-                                downloaded_count += 1
+
+                                # Find the most recently downloaded file
+                                latest_file = max([os.path.join(download_dir, f) for f in os.listdir(download_dir)],
+                                                  key=os.path.getctime)
+
+                                # Construct new filename
+                                new_filename = f"{company_code}{file_number}.pdf"
+                                new_filepath = os.path.join(download_dir, new_filename)
+
+                                # Rename the file
+                                try:
+                                    # If target file already exists, remove it
+                                    if os.path.exists(new_filepath):
+                                        os.remove(new_filepath)
+                                    os.rename(latest_file, new_filepath)
+                                    print(f"File renamed to: {new_filename}")
+                                    downloaded_count += 1
+                                    file_number += 1
+                                except Exception as rename_error:
+                                    print(f"Error renaming file: {rename_error}")
+
                         except Exception as e:
                             print(f"No download link found or error downloading: {e}")
                         finally:
                             driver.back()
-                            # Wait for table to reload
                             WebDriverWait(driver, 10).until(
                                 EC.presence_of_all_elements_located(
                                     (By.XPATH, "//table[@class='table table-hover']//tbody//tr"))
                             )
-                            time.sleep(1)  # Short wait for stability
+                            time.sleep(1)
 
                 except Exception as e:
                     print(f"Error processing row {row_index}: {e}")
@@ -206,10 +242,9 @@ def select_date_and_download(base_url, company_name):
                         print("Error returning to previous page")
                     continue
 
-            # Check if there are more pages (you'll need to implement pagination handling if needed)
-            break
+            break  # Remove this if implementing pagination
 
-        print(f"Total PDFs downloaded: {downloaded_count}")
+        print(f"Total PDFs downloaded and renamed: {downloaded_count}")
         return downloaded_count
 
     except Exception as e:

@@ -13,6 +13,8 @@ class Company(db.Model):
     forecast_day = db.Column(db.String(10), nullable=True)
     forecast_week = db.Column(db.String(10), nullable=True)
     forecast_month = db.Column(db.String(10), nullable=True)
+    NLP_recommendation = db.Column(db.String(50), nullable=True)
+
 
     # Relationship with CompanyData
     company_data = db.relationship('CompanyData', backref='company', lazy=True)
