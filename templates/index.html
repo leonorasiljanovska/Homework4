@@ -35,7 +35,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Update Company Data</h1>
+    <h1>Companies</h1>
 
     <form method="POST">
         <label for="company_code">Select Company:</label>
@@ -51,20 +51,44 @@
         <button type="submit">Update</button>
     </form>
 
+    <!-- NLP Recommendation Button -->
+    <br><br>
+    <form id="nlp_form" action="{{ url_for('nlp_recommendation') }}" method="POST">
+        <input type="hidden" name="company_code" id="nlp_company_code">
+        <button type="submit">Get NLP Recommendation</button>
+    </form>
+
     <!-- Forecast Button Form -->
     <br><br>
     <form id="forecast_form" action="" method="get">
         <button type="submit">Forecast with Indicators and Oscillators</button>
     </form>
 
-    <script>
-        // Dynamically update the action of the forecast form based on the selected company
-        document.getElementById("company_code").addEventListener("change", function() {
-            var companyCode = this.value;
-            var formAction = "/company/" + companyCode;
-            document.getElementById("forecast_form").action = formAction;
-        });
-    </script>
+    <!-- PDF Download Button Form -->
+    <br><br>
+    <form id="download_form" action="" method="get">
+        <button type="submit" id="download_button" disabled>Download PDF Files</button>
+    </form>
 
+   <script>
+    // Dynamically update all forms when company selection changes
+    document.getElementById("company_code").addEventListener("change", function () {
+        var companyCode = this.value;
+
+        // Update the hidden input for NLP form
+        document.getElementById("nlp_company_code").value = companyCode;
+
+        // Update the action for the forecast form
+        var forecastFormAction = "/company/" + companyCode;
+        document.getElementById("forecast_form").action = forecastFormAction;
+
+        // Update the action for the download form
+        var downloadFormAction = "/company/" + companyCode + "/download-pdfs";
+        document.getElementById("download_form").action = downloadFormAction;
+
+        // Enable the download button
+        document.getElementById("download_button").disabled = false;
+    });
+    </script>
 </body>
 </html>
