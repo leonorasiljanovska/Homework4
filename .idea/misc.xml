@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.12 (Homework3)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="C:\Users\Leonora\anaconda3" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="tensorflow_env" project-jdk-type="Python SDK" />
 </project>
