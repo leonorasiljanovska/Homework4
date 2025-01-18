@@ -2,7 +2,6 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import os
 import fitz
 import re
-from models.db import db
 
 
 def extract_text_from_pdf(pdf_path):

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from models import db
+from app.models import db
 from sqlalchemy import text
 
 

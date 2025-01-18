@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockPredict Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1e293b;
+            color: #f8fafc;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+       .sidebar {
+            background-color: #0f172a;
+            height: 100vh;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar a {
+            color: #334155;
+            text-decoration: none;
+            display: block;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        #pr{
+            color: white;
+        }
+        .sidebar a:hover {
+            color: #38bdf8;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #1e293b;
+        }
+
+        .card {
+            background-color: #334155;
+            border: none;
+        }
+
+        .chart-container {
+        background-color: #334155;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        height: 100%; /* Ensure it takes up full height of the container */
+        display: flex;
+        align-items: center; /* Align chart in the center vertically */
+        }
+
+        #chart {
+            width: 100%;
+            height: 100%; /* Make the chart fill the container */
+        }
+
+        .wh{
+            color: white !important;
+        }
+
+        .update-container {
+            text-align: center;
+            padding: 40px;
+            background-color: #334155;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 0px;
+            height: 400px;  /* Increased height */
+        }
+
+        .update-container button {
+            width: 50%;
+        }
+
+        table {
+            background-color: #334155;
+            color: #f8fafc;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            text-align: center;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #1e293b;
+        }
+
+        .login-container .btn:hover {
+            background-color: #0ea5e9;
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .col-md-6 {
+            flex: 1;
+        }
+
+        .col-md-6:first-child {
+            padding-right: 20px;
+        }
+
+        .form-control {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        /* Center the elements inside the dashboard */
+        .flex-grow-1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .alert-info {
+            width: 50%; /* Left half of the page */
+            margin: 20px auto;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .alert-info p {
+            margin: 0;
+            line-height: 1.5; /* Increased line height for readability */
+        }
+
+    </style>
+</head>
+<body>
+<div class="d-flex">
+    <div class="sidebar">
+        <h3>StockPredict</h3>
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="pr">Predictions</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/lstm">LSTM Prediction</a></li>
+                <li><a class="dropdown-item" href="/nlp">NLP Recommendation</a></li>
+                <li><a class="dropdown-item" href="/forecasts">Forecasts</a></li>
+            </ul>
+        </div>
+        <div class="mt-auto">
+            <a href="/about" class="wh">About Us</a>
+        </div>
+    </div>
+    <div class="flex-grow-1">
+        <div class="dashboard-header">
+            <h1>Dashboard</h1>
+
+        </div>
+        <div class="container py-4">
+            <div class="row">
+                <form method="POST" class="d-flex">
+                    <div class="col-md-6" id="left">
+                        <div class="update-container">
+                            <p>Select a company from the dropdown and click the button below to update the selected company data:</p>
+
+                            <select name="company_code" class="form-control">
+                                <option value="">-- Select a Company --</option>
+                                {% for company in company_codes %}
+                                    <option value="{{ company.company_code }}" {% if company.company_code == selected_company_code %}selected{% endif %}>
+                                        {{ company.company_code }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                            <br>
+
+                            <button type="submit" class="btn btn-primary">Update</button>
+                                {% if message %}
+                            <div class="alert alert-info">
+                                <p>{{ message.split('<br>')[0] }}</p>
+                                <p>{{ message.split('<br>')[1] }}</p>
+                                <p>{{ message.split('<br>')[2] }}</p>
+                            </div>
+                                {% endif %}
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <canvas id="chart" style="width: 100%; height: 250px;"></canvas>
+                        </div>
+                    </div>
+
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('chart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ labels|tojson }},
+            datasets: [{
+                label: 'Price',
+                data: {{ prices|tojson }},
+                borderColor: '#38bdf8',
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            maintainAspectRatio: false,
+            aspectRatio: 2,
+        }
+    });
+
+    window.addEventListener('resize', function() {
+    // Dynamically adjust the chart's height
+    chart.resize();
+});
+
+// Ensure chart adjusts its height correctly on initial load
+    chart.resize();
+
+</script>
+
+</body>
+</html>

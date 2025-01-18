@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1e293b;
+            color: #f8fafc;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(to bottom, #0f172a, #334155);
+            height: 100vh;
+            padding: 30px 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            width: 250px;
+            position: fixed;
+        }
+
+        .sidebar a {
+            color: #334155;
+            text-decoration: none;
+            display: block;
+            margin: 20px 0;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            color: #38bdf8;
+        }
+
+        .sidebar .mt-auto {
+            margin-top: auto;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #334155;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+            color: #38bdf8;
+        }
+
+        .dashboard-header span {
+            color: #38bdf8;
+            font-size: 1.2rem;
+        }
+
+        /* About Section */
+        .about-section {
+            text-align: center;
+            padding: 40px;
+            background-color: #334155;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .about-section h1 {
+            color: #38bdf8;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .about-section p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Team Members Section */
+        .team-members {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .team-member {
+            background-color: #0f172a;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 220px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+
+        .team-member .name-box {
+            background-color: #38bdf8;
+            color: #1e293b;
+            padding: 10px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .team-member img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 15px;
+            border: 4px solid #38bdf8;
+        }
+
+        .team-member h3 {
+            color: #38bdf8;
+            font-size: 1.4rem;
+            margin-top: 10px;
+        }
+
+        .team-member p {
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .wh{
+            color:white !important;
+        }
+        .social-icons a {
+            color: #f8fafc;
+            margin: 5px;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #38bdf8;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h3>StockPredict</h3>
+    <a href="../app/views/templates/home.html" class="wh">Home</a>
+    <div class="dropdown">
+        <a href="#" class="dropdown-toggle wh" data-bs-toggle="dropdown" aria-expanded="false">Predictions</a>
+        <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/lstm">LSTM Prediction</a></li>
+                <li><a class="dropdown-item" href="/nlp">NLP Recommendation</a></li>
+                <li><a class="dropdown-item" href="/forecasts">Forecasts</a></li>
+            </ul>
+    </div>
+
+    <div class="mt-auto">
+        <a href="about-us.html" class="wh">About Us</a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="dashboard-header">
+        <h1>About Us</h1>
+
+    </div>
+
+    <div class="about-section">
+        <h1>Our Mission</h1>
+        <p>We are a passionate team of three software engineering students dedicated to creating innovative solutions for the financial world. Our project focuses on providing insightful predictions for the Macedonian Stock Exchange to help investors make informed decisions. As students from Macedonia, we wanted to make a real impact in our home country’s financial market by offering advanced tools for stock prediction, tailored to the unique needs of the Macedonian Stock Exchange.</p>
+    </div>
+
+    <div class="team-members">
+        <div class="team-member">
+            <div class="name-box">Leonora Siljanovska</div>
+            <h3>Backend Developer</h3>
+            <p>Hello, I'm Leonora Siljanovska. I'm working on the backend of the application, integrating data sources, and ensuring the platform runs smoothly. I’m passionate about creating efficient and scalable solutions that support the application's growth.</p>
+            <img src="../static/images/lea.jpg" alt="Leonora Siljanovska">
+            <div class="social-icons">
+                <a href="https://www.linkedin.com/in/leonora-siljanovska1/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+        <div class="team-member">
+            <div class="name-box">Natalija Mihajlovska</div>
+            <h3>Frontend Developer</h3>
+            <p>I’m Natalija Mihajlovska, the frontend developer. I focus on designing and building the user interface to ensure an intuitive and user-friendly experience. My goal is to make the platform easy to navigate while looking visually appealing.</p>
+            <img src="../static/images/nate.jpg" alt="Natalija Mihajlovska">
+            <div class="social-icons">
+                <a href="https://www.linkedin.com/in/natalija-mihajlovska-8295a8304/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+        <div class="team-member">
+            <div class="name-box">Ljiljana Mladenovikj</div>
+            <h3>Data Scientist</h3>
+            <p>I am Ljiljana Mladenovikj, a passionate software engineering student focusing on data science and machine learning. I am working on developing the prediction models. My focus is on creating algorithms that improve the accuracy of stock predictions.</p>
+            <img src="../static/images/lili.jpg" alt="Ljiljana Mladenovikj">
+            <div class="social-icons">
+                <a href="https://www.linkedin.com/in/ljiljana-mladenovikj-8464a5304/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

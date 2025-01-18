@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from fundamental_analysis.dict_file import company_name_code
+from app.services.fundamental_analysis.dict_file import company_name_code
 
 
 def get_company_name(company_code):
@@ -109,7 +109,7 @@ def get_company_code(company_name):
 
 
 def select_date_and_download(base_url, company_name):
-    download_dir = r"C:\Leonora Siljanovska\FINKI\3 godina\DAS\Homework3\pdfs"
+    download_dir = r"/src/pdfs"
     company_code = get_company_code(company_name)
 
     if not company_code:

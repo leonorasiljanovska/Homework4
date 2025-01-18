@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSTM Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1e293b;
+            color: #f8fafc;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .sidebar {
+            background-color: #0f172a;
+            height: 100vh;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar a {
+            color: #f8fafc;
+            text-decoration: none;
+            display: block;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .sidebar a:hover {
+            color: #38bdf8;
+        }
+
+        .dropdown-menu {
+            background-color: #0f172a;
+            border: none;
+        }
+
+        .dropdown-menu a {
+            color: #f8fafc;
+        }
+
+        .dropdown-menu a:hover {
+            color: #38bdf8;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #38bdf8;
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .content-section {
+            padding: 20px;
+        }
+
+        .section-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #38bdf8;
+        }
+
+        .description-text {
+            font-size: 1rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        img {
+            width: 80%; /* Reduced size */
+            max-width: 400px; /* Maximum width to ensure it's not too large */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        img:hover {
+            transform: scale(1.05);
+        }
+
+        .code-snippet {
+            background-color: #334155;
+            color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            font-family: 'Courier New', monospace;
+        }
+
+        pre {
+            margin: 0;
+            overflow-x: auto;
+        }
+
+        .btn-primary {
+            background-color: #0ea5e9;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            transform: scale(1.05);
+        }
+
+        .content-row {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .left-column {
+            flex: 1;
+        }
+
+        .right-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .result-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #334155;
+            color: #f8fafc;
+            border-radius: 8px;
+            display: none; /* Initially hidden */
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+<div class="d-flex">
+    <div class="sidebar">
+        <h3>StockPredict</h3>
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Predictions</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/lstm">LSTM Prediction</a></li>
+                <li><a class="dropdown-item" href="/nlp">NLP Recommendation</a></li>
+                <li><a class="dropdown-item" href="/forecasts">Forecasts</a></li>
+            </ul>
+        </div>
+        <a href="home.html">Home</a>
+        <div class="mt-auto">
+            <a href="about-us.html">About Us</a>
+        </div>
+    </div>
+    <div class="flex-grow-1">
+        <div class="dashboard-header">
+            <h1>LSTM Prediction</h1>
+        </div>
+
+        <!-- Content Section -->
+        <div class="content-section">
+            <div class="section-header">
+                Understanding Long Short-Term Memory (LSTM)
+            </div>
+
+            <div class="content-row">
+                <!-- Left Column -->
+                <div class="left-column">
+                    <p class="description-text">
+                        For the LSTM (Long Short-Term Memory) Stock Price Prediction, we will utilize machine learning to forecast future stock prices by training an LSTM model on historical data. The model will be trained on 70% of the dataset and validated on the remaining 30%, with predictions being evaluated using metrics like Mean Squared Error (MSE) to measure its accuracy. By fine-tuning the model’s parameters, we aim to improve the prediction performance for short- and long-term stock price trends.
+                    </p>
+                    <img src="../static/images/lstm.png" alt="LSTM Visualization">
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-column">
+                    <div class="code-snippet">
+                        <pre>
+                        <code>
+                        // LSTM Implementation
+                        from keras.models import Sequential
+                        from keras.layers import LSTM, Dense
+
+                        model = Sequential()
+                        model.add(LSTM(units=50, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])))
+                        model.add(LSTM(units=50, return_sequences=False))
+                        model.add(Dense(units=1))
+                        model.compile(optimizer='adam', loss='mean_squared_error')
+                        </code>
+                        </pre>
+                    </div>
+
+                    <form method="POST" class="mt-4">
+                        <label for="company_code" class="form-label">Select a Company:</label>
+                        <select name="company_code" id="company_code" class="form-select">
+                            {% for company in company_codes %}
+                                <option value="{{ company.company_code }}">{{ company.company_code }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-primary mt-3">Get LSTM Prediction</button>
+                    </form>
+
+                    {% if prediction %}
+                    <div class="result-container mt-4">
+                        <p>LSTM Recommendation: {{ prediction }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

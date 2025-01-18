@@ -7,9 +7,7 @@ from tensorflow.keras.optimizers import Adam
 import numpy as np
 from sklearn.metrics import mean_squared_error
 
-from models import CompanyData, Company
-from models.db import db
-from sqlalchemy import text
+from app.models import CompanyData, Company
 import pandas as pd
 
 
