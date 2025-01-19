@@ -6,7 +6,7 @@ class CompanyData(db.Model):
     __tablename__ = 'CompaniesData'
 
     id = db.Column(db.Integer, primary_key=True)
-    company_id = db.Column(db.Integer, db.ForeignKey('Companies.id'), nullable=False)  # Note the capital C in Companies
+    company_id = db.Column(db.Integer, db.ForeignKey('Companies.id'), nullable=False)
     date = db.Column(db.Date, nullable=False)
     last_transaction_price = db.Column(db.Float, nullable=False)
     max_price = db.Column(db.Float, nullable=True)

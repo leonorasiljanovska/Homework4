@@ -139,7 +139,7 @@
             background-color: #334155;
             color: #f8fafc;
             border-radius: 8px;
-            display: none; /* Initially hidden */
+             /* Initially hidden */
             width: 100%;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -211,11 +211,11 @@
                         <button type="submit" class="btn btn-primary mt-3">Get LSTM Prediction</button>
                     </form>
 
-                    {% if prediction %}
                     <div class="result-container mt-4">
                         <p>LSTM Recommendation: {{ prediction }}</p>
                     </div>
-                    {% endif %}
+
+
                 </div>
             </div>
         </div>

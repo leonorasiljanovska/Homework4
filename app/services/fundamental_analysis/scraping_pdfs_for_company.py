@@ -125,9 +125,12 @@ def select_date_and_download(base_url, company_name):
         "safebrowsing.enabled": True
     }
     chrome_options.add_experimental_option("prefs", prefs)
-
+    options1 = webdriver.ChromeOptions()
+    options1.add_argument("--headless")  # Run in headless mode for speed
+    options1.add_argument("--no-sandbox")
+    options1.add_argument("--disable-dev-shm-usage")
     print("Initializing WebDriver...")
-    driver = webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Chrome(options=options1)
     driver.get(base_url)
 
     downloaded_count = 0
@@ -242,7 +245,7 @@ def select_date_and_download(base_url, company_name):
                         print("Error returning to previous page")
                     continue
 
-            break  # Remove this if implementing pagination
+            break
 
         print(f"Total PDFs downloaded and renamed: {downloaded_count}")
         return downloaded_count
