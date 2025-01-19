@@ -1,3 +1,32 @@
+
+# Step 1: Use Miniconda as the base image
+FROM continuumio/miniconda3:latest
+
+# Step 2: Set the working directory in the container
+WORKDIR /app
+
+# Step 3: Copy the Conda environment file to the container
+COPY environment.yml .
+
+# Step 4: Create the Conda environment
+RUN conda env create -f environment.yml
+
+# Step 5: Activate the environment by default
+# (Conda environments need to be activated explicitly in Docker)
+RUN echo "conda activate tensorflow_env" >> ~/.bashrc
+ENV PATH /opt/conda/envs/tensorflow_env/bin:$PATH
+
+# Step 6: Copy the application code into the container
+COPY . .
+
+# Step 7: Expose the port (if necessary, e.g., for web apps)
+EXPOSE 5000
+
+# Step 8: Define the default command to run your app
+CMD ["python", "company_controller.py"]
+
+
+
 ## Use the official Conda image as base
 #FROM continuumio/miniconda3
 #
@@ -60,29 +89,3 @@
 #
 ## Set the default command to activate conda environment and run your app
 #CMD ["conda", "run", "-n", "tensorflow_env", "python", "company_controller.py"]
-
-# Step 1: Use Miniconda as the base image
-FROM continuumio/miniconda3:latest
-
-# Step 2: Set the working directory in the container
-WORKDIR /app
-
-# Step 3: Copy the Conda environment file to the container
-COPY environment.yml .
-
-# Step 4: Create the Conda environment
-RUN conda env create -f environment.yml
-
-# Step 5: Activate the environment by default
-# (Conda environments need to be activated explicitly in Docker)
-RUN echo "conda activate tensorflow_env" >> ~/.bashrc
-ENV PATH /opt/conda/envs/tensorflow_env/bin:$PATH
-
-# Step 6: Copy the application code into the container
-COPY . .
-
-# Step 7: Expose the port (if necessary, e.g., for web apps)
-EXPOSE 5000
-
-# Step 8: Define the default command to run your app
-CMD ["python", "company_controller.py"]
